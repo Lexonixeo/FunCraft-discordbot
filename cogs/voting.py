@@ -24,7 +24,7 @@ class Voting(commands.Cog):
         message = reaction.message
         playerRole = discord.utils.get(message.guild.roles, id=1130377725585133620)
         if message.channel.id == 1130378298883575909:
-            if playerRole not in message.author.roles:
+            if playerRole not in message.author.roles and message.author.id != 1117791868646858925:
                 await reaction.remove(user)
             else:
                 for react in message.reactions:
