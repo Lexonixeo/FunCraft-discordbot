@@ -9,7 +9,7 @@ import json
 
 
 def get_joke():
-    with open('jokes.txt', 'r', encoding='utf8') as file:
+    with open('cogs/jokes.txt', 'r', encoding='utf8') as file:
         jokes = file.readlines()
 
     final_joke = jokes[random.randint(0, len(jokes) - 1)]
@@ -36,7 +36,7 @@ class Voice(commands.Cog):
     @commands.slash_command(name='knsh')
     async def knsh(self, ctx):
         if ctx.author.id == 786902643188432908 or ctx.author.id == 396961790778540032:
-            secretSound = discord.FFmpegPCMAudio(f"../sounds/secret.mp3")
+            secretSound = discord.FFmpegPCMAudio(f"sounds/secret.mp3")
             for vc in self.client.voice_clients:
                 while vc.is_playing():
                     await asyncio.sleep(10)
@@ -46,7 +46,7 @@ class Voice(commands.Cog):
 
     @commands.slash_command(name='say', description='Сказать в голосовой канал')
     async def say(self, ctx, text: Option(str, description='Сообщение', required=True)):
-        with open('../config.json', 'r') as jsonFile:
+        with open('config.json', 'r') as jsonFile:
             config = json.load(jsonFile)
         i = config['voice_sound_count']
 
@@ -59,13 +59,13 @@ class Voice(commands.Cog):
                 await asyncio.sleep(10)
             else:
                 obj = gTTS(text=text, lang='ru', slow=False)
-                obj.save(f"../sounds/{i}.mp3")
-                textSound = discord.FFmpegPCMAudio(f"../sounds/{i}.mp3")
+                obj.save(f"sounds/{i}.mp3")
+                textSound = discord.FFmpegPCMAudio(f"sounds/{i}.mp3")
                 vc.play(textSound)
                 print(f"voice-say: {str(ctx.author)}: {text}")
 
         config['voice_sound_count'] += 1
-        with open('../config.json', 'w') as jsonFile:
+        with open('config.json', 'w') as jsonFile:
             json.dump(config, jsonFile, indent=4)
 
     @commands.slash_command(name='disconnect', description='Отключиться от голосового канала')
@@ -77,7 +77,7 @@ class Voice(commands.Cog):
 
     @tasks.loop(seconds=120)
     async def joke(self):
-        with open('../config.json', 'r') as jsonFile:
+        with open('config.json', 'r') as jsonFile:
             config = json.load(jsonFile)
         i = config['voice_sound_count']
 
@@ -86,7 +86,7 @@ class Voice(commands.Cog):
                 await asyncio.sleep(10)
             else:
                 if random.randint(0, 9) == 0:
-                    secretSound = discord.FFmpegPCMAudio(source=f"../sounds/secret.mp3")
+                    secretSound = discord.FFmpegPCMAudio(source=f"sounds/secret.mp3")
                     print("voice-task: Секретный звук")
                     vc.play(secretSound)
                 else:
@@ -94,13 +94,13 @@ class Voice(commands.Cog):
                     text = f"Внимание! Шутка!\n{joke}\nФить-ха!"
                     obj = gTTS(text=text, lang='ru', slow=False)
                     obj.save(f"sounds/{i}.mp3")
-                    jokeSound = discord.FFmpegPCMAudio(source=f"../sounds/{i}.mp3")
+                    jokeSound = discord.FFmpegPCMAudio(source=f"sounds/{i}.mp3")
                     print(f"voice-task: Анекдот: \"{joke}\"")
                     vc.play(jokeSound)
 
-        config['voice_sound_count'] += 1
-        with open('../config.json', 'w') as jsonFile:
-            json.dump(config, jsonFile, indent=4)
+                    config['voice_sound_count'] += 1
+                    with open('config.json', 'w') as jsonFile:
+                        json.dump(config, jsonFile, indent=4)
 
 
 def setup(client):

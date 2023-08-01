@@ -18,7 +18,7 @@ class RCON(commands.Cog):
 
     @commands.slash_command(name='cmd', description='Отправляет команду на сервер')
     async def cmd(self, ctx, command: Option(str, description='Команда', required=True)):
-        with open('../config.json', 'r') as jsonFile:
+        with open('config.json', 'r') as jsonFile:
             config = json.load(jsonFile)
 
         if ctx.author.id == 396961790778540032 or ctx.author.id == 785775906521350174:
@@ -35,7 +35,7 @@ class RCON(commands.Cog):
 
     @tasks.loop(minutes=5)
     async def check_status(self):
-        with open('../config.json', 'r') as jsonFile:
+        with open('config.json', 'r') as jsonFile:
             config = json.load(jsonFile)
         server_status = config['status_server']
 
@@ -54,7 +54,7 @@ class RCON(commands.Cog):
                 config['status_server'] = 'offline'
                 await self.client.get_channel(config['status_channel']).send('Сервер оффлайн(')
         finally:
-            with open('../config.json', 'w') as jsonFile:
+            with open('config.json', 'w') as jsonFile:
                 json.dump(config, jsonFile, indent=4)
 
 
