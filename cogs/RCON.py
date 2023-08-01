@@ -7,7 +7,7 @@ from discord.ext import tasks
 
 class RCON(commands.Cog):
     def __init__(self, client):
-        with open('../config.json', 'r') as jsonFile:
+        with open('config.json', 'r') as jsonFile:
             config = json.load(jsonFile)
         self.rcon = RCONClient(config['rcon_host'], port=config['rcon_port'])
         self.client = client

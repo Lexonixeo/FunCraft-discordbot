@@ -19,6 +19,7 @@ class Voting(commands.Cog):
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
+        global yes, no
         channelIds = [1134182815337025628, 1129713156684529814]
         message = reaction.message
         playerRole = discord.utils.get(message.guild.roles, id=1130377725585133620)
