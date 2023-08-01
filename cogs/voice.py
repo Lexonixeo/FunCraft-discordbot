@@ -9,7 +9,7 @@ import json
 
 
 def get_joke():
-    with open('../jokes.txt', 'r', encoding='utf8') as file:
+    with open('jokes.txt', 'r', encoding='utf8') as file:
         jokes = file.readlines()
 
     final_joke = jokes[random.randint(0, len(jokes) - 1)]
@@ -36,7 +36,7 @@ class Voice(commands.Cog):
     @commands.slash_command(name='knsh')
     async def knsh(self, ctx):
         if ctx.author.id == 786902643188432908 or ctx.author.id == 396961790778540032:
-            secretSound = discord.FFmpegPCMAudio(f"sounds/secret.mp3")
+            secretSound = discord.FFmpegPCMAudio(f"../sounds/secret.mp3")
             for vc in self.client.voice_clients:
                 while vc.is_playing():
                     await asyncio.sleep(10)
@@ -59,8 +59,8 @@ class Voice(commands.Cog):
                 await asyncio.sleep(10)
             else:
                 obj = gTTS(text=text, lang='ru', slow=False)
-                obj.save(f"sounds/{i}.mp3")
-                textSound = discord.FFmpegPCMAudio(f"sounds/{i}.mp3")
+                obj.save(f"../sounds/{i}.mp3")
+                textSound = discord.FFmpegPCMAudio(f"../sounds/{i}.mp3")
                 vc.play(textSound)
                 print(f"voice-say: {str(ctx.author)}: {text}")
 
@@ -86,7 +86,7 @@ class Voice(commands.Cog):
                 await asyncio.sleep(10)
             else:
                 if random.randint(0, 9) == 0:
-                    secretSound = discord.FFmpegPCMAudio(source=f"sounds/secret.mp3")
+                    secretSound = discord.FFmpegPCMAudio(source=f"../sounds/secret.mp3")
                     print("voice-task: Секретный звук")
                     vc.play(secretSound)
                 else:
@@ -94,7 +94,7 @@ class Voice(commands.Cog):
                     text = f"Внимание! Шутка!\n{joke}\nФить-ха!"
                     obj = gTTS(text=text, lang='ru', slow=False)
                     obj.save(f"sounds/{i}.mp3")
-                    jokeSound = discord.FFmpegPCMAudio(source=f"sounds/{i}.mp3")
+                    jokeSound = discord.FFmpegPCMAudio(source=f"../sounds/{i}.mp3")
                     print(f"voice-task: Анекдот: \"{joke}\"")
                     vc.play(jokeSound)
 
