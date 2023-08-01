@@ -2,9 +2,6 @@ from gtts import gTTS
 import asyncio
 import random
 import discord
-import time
-import requests
-import hashlib
 from discord.ext import commands
 from discord import Option
 from discord.ext import tasks
@@ -12,24 +9,11 @@ import json
 
 
 def get_joke():
-    with open('config.json', 'r') as jsonFile:
-        config = json.load(jsonFile)
-    with open('jokes.txt', 'r', encoding='utf8') as file:
+    with open('../jokes.txt', 'r', encoding='utf8') as file:
         jokes = file.readlines()
 
-    query = 'pid=' + config["joke_pid"] + '&method=getRandItem&uts=' + str(int(time.time()))
-    signature = hashlib.md5((query + config["joke_key"]).encode())
-    url = 'http://anecdotica.ru/api?' + query + '&hash=' + signature.hexdigest()
-    result = requests.get(url).json()
-    if result['result']['error'] != 0:
-        final_joke = jokes[random.randint(0, len(jokes) - 1)]
-        return final_joke.replace('\\n', '\n')
-    else:
-        final_joke = requests.get(url).json()['item']['text'].replace("\n","\\n").replace("\r","\\n").replace("\\n\\n","\\n")
-        if final_joke not in jokes:
-            with open('jokes.txt', 'a', encoding="utf8") as f:
-                f.writelines(f"\n{final_joke}")
-        return final_joke.replace('\\n', '\n')
+    final_joke = jokes[random.randint(0, len(jokes) - 1)]
+    return final_joke.replace('\\n', '\n')
 
 
 class Voice(commands.Cog):
@@ -62,7 +46,7 @@ class Voice(commands.Cog):
 
     @commands.slash_command(name='say', description='Сказать в голосовой канал')
     async def say(self, ctx, text: Option(str, description='Сообщение', required=True)):
-        with open('config.json', 'r') as jsonFile:
+        with open('../config.json', 'r') as jsonFile:
             config = json.load(jsonFile)
         i = config['voice_sound_count']
 
@@ -81,7 +65,7 @@ class Voice(commands.Cog):
                 print(f"voice-say: {str(ctx.author)}: {text}")
 
         config['voice_sound_count'] += 1
-        with open('config.json', 'w') as jsonFile:
+        with open('../config.json', 'w') as jsonFile:
             json.dump(config, jsonFile, indent=4)
 
     @commands.slash_command(name='disconnect', description='Отключиться от голосового канала')
@@ -93,7 +77,7 @@ class Voice(commands.Cog):
 
     @tasks.loop(seconds=120)
     async def joke(self):
-        with open('config.json', 'r') as jsonFile:
+        with open('../config.json', 'r') as jsonFile:
             config = json.load(jsonFile)
         i = config['voice_sound_count']
 
@@ -115,7 +99,7 @@ class Voice(commands.Cog):
                     vc.play(jokeSound)
 
         config['voice_sound_count'] += 1
-        with open('config.json', 'w') as jsonFile:
+        with open('../config.json', 'w') as jsonFile:
             json.dump(config, jsonFile, indent=4)
 
 
