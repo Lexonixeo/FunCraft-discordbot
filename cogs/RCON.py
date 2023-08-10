@@ -1,4 +1,5 @@
 import json
+import cryptocode
 from discord.ext import commands
 from discord import Option
 from mctools import RCONClient
@@ -24,7 +25,8 @@ class RCON(commands.Cog):
         if ctx.author.id == 396961790778540032 or ctx.author.id == 785775906521350174:
             print(f"rcon-cmd: {ctx.author}: {command}")
             try:
-                self.rcon.login(config['rcon_password'])
+                password = cryptocode.decrypt(config['rсоn_раsswоrd'], config['wth'][:-1])
+                self.rcon.login(password)
                 response = self.rcon.command(command).replace("[0m", "")
                 self.rcon.stop()
                 await ctx.respond(f"Команда выполнена! Результат:\n> {response}")
@@ -40,7 +42,8 @@ class RCON(commands.Cog):
         server_status = config['status_server']
 
         try:
-            self.rcon.login(config['rcon_password'])
+            password = cryptocode.decrypt(config['rсоn_раsswоrd'], config['wth'][1:-1])
+            self.rcon.login(password)
             self.rcon.command("save-all")
             self.rcon.stop()
             if server_status == 'offline':
